@@ -27,7 +27,9 @@
 Why were these data types selected?
 
 ### Answer
-_Write your explanation here._
+The country.Population column uses the INT data type because population values represent whole-number counts of people and can grow very large, making an integer type both appropriate and efficient for storage and indexing.
+In contrast, the country.LifeExpectancy column uses DECIMAL(3,1) because life expectancy is an averaged measure that requires fractional precision. The decimal type ensures accurate representation of values such as 72.4 years without the rounding errors associated with floating point types.
+Together, these choices reflect the nature of the underlying data: populations are discrete whole numbers, while life expectancy requires controlled numeric precision.
 
 ### Screenshot
 _Show the table structure or DESCRIBE output._
@@ -46,7 +48,7 @@ DESCRIBE country;
 Why do you think this data type was selected?
 
 ### Answer
-_Write your explanation here._
+The country.IndepYear column is defined as a SMALLINT, which is appropriate because independence years fall within a narrow numeric range and do not require the larger capacity of an INT. Using SMALLINT reduces storage while still accommodating all realistic year values. The field is also nullable, reflecting the fact that some countries or territories do not have a clearly defined independence year. This data type therefore balances efficiency with the historical variability of the data
 
 ### Screenshot
 
@@ -64,7 +66,7 @@ DESCRIBE country;
 Explain why your proposed data type might be better in some situations.
 
 ### Answer
-_Write your explanation here._
+Although SMALLINT is a practical choice for storing independence years, the YEAR data type could be an even better option in some situations. The YEAR type is purpose built for representing calendar years and automatically restricts values to a valid range, reducing the likelihood of incorrect or out of scope entries. Using YEAR also makes the schema more self documenting, clearly signaling that the column is intended to store a year rather than a general integer. In applications where data validation and semantic clarity are important, the YEAR data type may therefore offer advantages over SMALLINT.
 
 ---
 
