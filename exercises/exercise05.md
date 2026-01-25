@@ -42,7 +42,10 @@ year
 ### SQL
 
 ```sql
--- Your SQL here
+SELECT DISTINCT EXTRACT(YEAR FROM sent_date)::int AS year
+FROM emails
+WHERE sent_date IS NOT NULL
+ORDER BY year;
 ```
 
 ### Screenshot
@@ -65,7 +68,11 @@ count   year
 ### SQL
 
 ```sql
--- Your SQL here
+SELECT COUNT(*) AS count, EXTRACT(YEAR FROM sent_date)::int AS year
+FROM emails
+WHERE sent_date IS NOT NULL
+GROUP BY year
+ORDER BY year;
 ```
 
 ### Screenshot
@@ -86,7 +93,10 @@ Only include emails that contain **both** a sent date and an opened date.
 ### SQL
 
 ```sql
--- Your SQL here
+SELECT sent_date, opened_date, opened_date - sent_date AS interval
+FROM emails
+WHERE sent_date IS NOT NULL
+AND opened_date IS NOT NULL;
 ```
 
 ### Screenshot
@@ -102,7 +112,11 @@ Using the `sqlda` database, write the SQL needed to show emails that contain an 
 ### SQL
 
 ```sql
--- Your SQL here
+SELECT email_id, customer_id, sent_date, opened_date, opened_date - sent_date AS interval
+FROM emails
+WHERE sent_date IS NOT NULL
+AND opened_date IS NOT NULL
+AND opened_date < sent_date;
 ```
 
 ### Screenshot
@@ -119,7 +133,8 @@ After looking at the data, **why is this the case?**
 
 ### Answer
 
-_Write your explanation here._
+These records are a data quality issue in the sample dataset. For those emails, the opened_date timestamps don't correspond to the actual sent_date of that specific message—opened_date is sometimes earlier by months or years. This usually happens when data is generated or joined from different sources without enforcing consistent event order, so an older "open" event gets associated with a newer "send" event. In other words, the timestamps are valid individually, but they don't represent a real "sent and then opened" sequence for that email, which is why the opened date appears before the sent date.
+
 
 ### Screenshot (if requested by instructor)
 
@@ -160,7 +175,10 @@ CREATE TEMP TABLE customer_dealership_distance AS (
 
 ### Answer
 
-_Write your explanation here._
+This code builds three temporary tables to compute distances between every customer and every dealership:
+- **customer_points** converts each customer's longitude/latitude into a point value, keeping only customers with valid coordinates.
+- **dealership_points** does the same for each dealership.
+- **customer_dealership_distance** then takes a cross join of all customer points and dealership points and uses the <@> operator to calculate the straight line distance between each customer–dealership pair, storing that distance in a temp table. The result is a full matrix of distances between all customers and all dealerships.
 
 ---
 
@@ -177,7 +195,14 @@ For example - dealership 1 is below:
 ### SQL
 
 ```sql
--- Your SQL here
+SELECT dealership_id,
+ARRAY_AGG(
+(last_name || ',' || first_name)
+ORDER BY salesperson_id
+) AS salespeople_array
+FROM salespeople
+GROUP BY dealership_id
+ORDER BY dealership_id;
 ```
 
 ### Screenshot
@@ -202,7 +227,15 @@ Reference image:
 ### SQL
 
 ```sql
--- Your SQL here
+SELECT d.dealership_id, d.state, COUNT(*) AS count,
+ARRAY_AGG(
+(s.last_name || ',' || s.first_name)
+ORDER BY s.salesperson_id
+) AS array_agg  
+FROM dealerships d
+JOIN salespeople s ON d.dealership_id = s.dealership_id
+GROUP BY d.dealership_id, d.state
+ORDER BY d.state,count;
 ```
 
 ### Screenshot
@@ -218,7 +251,8 @@ Using the `sqlda` database, write the SQL needed to convert the **customers** ta
 ### SQL
 
 ```sql
--- Your SQL here
+SELECT row_to_json(c) AS customer_json
+FROM customers c;
 ```
 
 ### Screenshot
@@ -244,7 +278,21 @@ Reference image:
 ### SQL
 
 ```sql
--- Your SQL here
+WITH dealership_salespeople AS (
+SELECT d.dealership_id, d.state, COUNT(*) AS num_salespeople,
+ARRAY_AGG(
+(s.last_name || ',' || s.first_name)
+ORDER BY salesperson_id
+) AS array_agg
+FROM dealerships d
+JOIN salespeople s
+ON d.dealership_id = s.dealership_id
+GROUP BY d.dealership_id, d.state
+ORDER BY d.state, num_salespeople
+)
+SELECT
+row_to_json(dealership_salespeople) AS row_to_json
+FROM dealership_salespeople;
 ```
 
 ### Screenshot
