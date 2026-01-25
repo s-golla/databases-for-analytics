@@ -31,7 +31,16 @@ Considering the World database, write a SQL statement that will **display the na
 ### SQL
 
 ```sql
--- Your SQL here
+SELECT
+    c.Name AS name,
+    COUNT(*) AS num_languages
+FROM country c
+JOIN countrylanguage cl
+    ON c.Code = cl.CountryCode
+WHERE cl.IsOfficial = 'T'
+GROUP BY c.Name
+HAVING COUNT(*) > 2
+ORDER BY num_languages DESC;
 ```
 
 ### Screenshot
@@ -49,7 +58,21 @@ After the `create_engine` command is executed, **what are the three statements r
 ### Python Code
 
 ```python
-# Your three Python statements here
+query = """
+SELECT
+    c.Name AS name,
+    COUNT(*) AS num_languages
+FROM country c
+JOIN countrylanguage cl
+    ON c.Code = cl.CountryCode
+WHERE cl.IsOfficial = 'T'
+GROUP BY c.Name
+HAVING COUNT(*) > 2
+ORDER BY num_languages DESC;
+"""
+
+df = pd.read_sql(query, engine)
+df
 ```
 
 ### Screenshot
@@ -69,7 +92,28 @@ Using **Jupyter Notebooks**, write the Python code needed to produce the followi
 ### Python Code
 
 ```python
-# Your Python code here
+import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+
+df.columns = ['name', 'num_languages']
+
+plt.figure(figsize=(12,8))
+plt.bar(df['name'], df['num_languages'], color='steelblue')
+
+rect = mpatches.Patch(color='steelblue', label='num_languages')
+
+plt.gca().legend(
+    handles=[rect],
+    loc='upper right',
+    frameon=True
+)
+
+plt.xticks(rotation=90)
+
+plt.title('Countries With More Than Two Official Languages')
+plt.xlabel('name')
+plt.tight_layout()
+plt.show()
 ```
 
 ### Screenshot
