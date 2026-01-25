@@ -107,7 +107,7 @@ Save your diagram image in this repo and embed it below.
 
 #### Diagram
 
-![Star Schema Diagram](star-schema.png)
+![Star Schema Diagram](screenshots/star-schema.png)
 
 ---
 
@@ -121,4 +121,9 @@ In 1-2 short paragraphs, explain:
 
 #### Design Notes
 
-_Write your design notes here._
+- **What dimensions you chose and why**
+  - I selected the SalesRep, Customer, Part, and Date dimensions because they represent the core business subjects needed to analyze sales activity. These dimensions capture stable descriptive attributes that allow slicing sales performance by customer, product, representative, and time, which are essential for answering the required analytics questions.
+- **Why your fact table grain is daily sales**
+  - The fact table uses a daily sales grain because the assignment requires analysis at the day level rather than at the order or transaction level. Storing facts at this grain ensures that all measures quantity, unit price, and total price are aggregated consistently for each customer, product, and date.
+- **How your design supports at least 3 of the required analytics questions**
+  - This design supports key analytics by enabling filtering and aggregation across dimensions. For example, the Date and Part dimensions allow you to determine how many units of a specific part were sold on a given day, the Customer dimension supports calculating how much a customer spent over a period, and the Date and Part dimensions together allow analysis of average daily sales or category performance during a specific quarter.
