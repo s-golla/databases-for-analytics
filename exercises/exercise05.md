@@ -133,7 +133,7 @@ After looking at the data, **why is this the case?**
 
 ### Answer
 
-These records are a data quality issue in the sample dataset. For those emails, the opened_date timestamps don't correspond to the actual sent_date of that specific message—opened_date is sometimes earlier by months or years. This usually happens when data is generated or joined from different sources without enforcing consistent event order, so an older "open" event gets associated with a newer "send" event. In other words, the timestamps are valid individually, but they don't represent a real "sent and then opened" sequence for that email, which is why the opened date appears before the sent date.
+These records are a data quality issue in the sample dataset. For those emails, the opened_date timestamps don't correspond to the actual sent_date of that specific message opened_date is sometimes earlier by months or years. This usually happens when data is generated or joined from different sources without enforcing consistent event order, so an older "open" event gets associated with a newer "send" event. In other words, the timestamps are valid individually, but they don't represent a real "sent and then opened" sequence for that email, which is why the opened date appears before the sent date.
 
 
 ### Screenshot (if requested by instructor)
