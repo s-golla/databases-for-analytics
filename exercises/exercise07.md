@@ -3,7 +3,7 @@
 - Name: Saratchandra Golla
 - Course: Database for Analytics
 - Module: 7
-- Database Used:  `moview` (**Dataset:** https://datasets.imdbws.com)
+- Database Used:  `movies` (**Dataset:** https://datasets.imdbws.com)
 - Tools Used: PostgreSQL (pgAdmin or psql)
 
 ## 1. The initial data source
@@ -82,47 +82,62 @@ I encountered several challenges while preparing and loading the IMDb data:
 ## 5. Show your table structure including data types
 
 **Table:** names
+
 ![names table description](screenshots/names_desc.jpg)
 
 **Table:** titles
+
 ![titles table description](screenshots/titles_desc.jpg)
 
 **Table:** episodes
+
 ![episodes table description](screenshots/episodes_desc.jpg)
 
 **Table:** ratings
+
 ![ratings table description](screenshots/ratings_desc.jpg)
 
 **Table:** crew
+
 ![crew table description](screenshots/crew_desc.jpg)
 
 **Table:** akas
+
 ![akas table description](screenshots/akas_desc.jpg)
 
 **Table:** principals
+
 ![principals table description](screenshots/principals_desc.jpg)
+
 
 ## 6. Select * from each of your tables
 
 **Table:** names
+
 ![names table data](screenshots/names_data.jpg)
 
 **Table:** titles
+
 ![titles table data](screenshots/titles_data.jpg)
 
 **Table:** episodes
+
 ![episodes table data](screenshots/episodes_data.jpg)
 
 **Table:** ratings
+
 ![ratings table data](screenshots/ratings_data.jpg)
 
 **Table:** crew
+
 ![crew table data](screenshots/crew_data.jpg)
 
 **Table:** akas
+
 ![akas table data](screenshots/akas_data.jpg)
 
 **Table:** principals
+
 ![principals table data](screenshots/principals_data.jpg)
 
 ## 7. Show some interesting queries from your tables.  Include:
@@ -130,6 +145,7 @@ I encountered several challenges while preparing and loading the IMDb data:
 
 - **Show all titles a person is known for:**
 
+    ```sql
     SELECT
         n.primaryName,
         t.primaryTitle,
@@ -139,11 +155,13 @@ I encountered several challenges while preparing and loading the IMDb data:
     JOIN nameTitleLink l ON n.nconst = l.nconst
     JOIN titles t ON t.tconst = l.titleID
     WHERE n.nconst = 'nm0000001';
+    ```
 
     ![Show all titles a person is known for](screenshots/join_01.jpg)
 
 - **List all people associated with a specific title**
 
+    ```sql
     SELECT
         t.primaryTitle,
         n.primaryName,
@@ -152,11 +170,13 @@ I encountered several challenges while preparing and loading the IMDb data:
     JOIN nameTitleLink l ON t.tconst = l.titleID
     JOIN names n ON n.nconst = l.nconst
     WHERE t.tconst = 'tt0000001';
+    ```
 
     ![List all people associated with a specific title](screenshots/join_02.jpg)
 
 - **Find actors and the movies they are known for Filters by profession and joins to titles**
 
+    ```sql
     SELECT
         n.primaryName,
         t.primaryTitle,
@@ -167,6 +187,7 @@ I encountered several challenges while preparing and loading the IMDb data:
     WHERE 'actor' = ANY(n.primaryProfession)
     ORDER BY n.primaryName
     LIMIT 50;
+    ```
 
     ![Find actors and the movies they are known for Filters by profession and joins to titles](screenshots/join_03.jpg)
 
@@ -174,17 +195,20 @@ I encountered several challenges while preparing and loading the IMDb data:
 
 - **Count how many titles exist per genre:**
 
+    ```sql
     SELECT
         unnest(genres) AS genre,
         COUNT(*) AS total_titles
     FROM titles
     GROUP BY genre
     ORDER BY total_titles DESC;
+    ```
 
     ![Count how many titles exist per genre](screenshots/group_01.jpg)
 
 - **Count how many people were born each year Useful for demographic analysis.**
 
+    ```sql
     SELECT
         birthYear,
         COUNT(*) AS total_people
@@ -192,5 +216,6 @@ I encountered several challenges while preparing and loading the IMDb data:
     WHERE birthYear IS NOT NULL
     GROUP BY birthYear
     ORDER BY birthYear DESC;
+    ```
 
     ![Count how many people were born each year Useful for demographic analysis](screenshots/group_02.jpg)
